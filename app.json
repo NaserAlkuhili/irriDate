@@ -4,7 +4,7 @@
     "slug": "my-new-project",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/irriDate.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -12,7 +12,18 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nasseralkuhili.mynewproject",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": "com.googleusercontent.apps.413725349142-vhe5u9pilen59qqq7c0ueek4b2s96tj8"
+        }
+      },
+      "entitlements": {
+        "com.apple.developer.networking.wifi-info": true
+      }
+  
+
     },
     "android": {
       "adaptiveIcon": {
@@ -22,6 +33,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4332788f-d604-4767-af4a-fd2c1465d6a5"
+      }
     }
   }
 }
