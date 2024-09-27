@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Animated, StyleSheet, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import colors from './colors';
 
 const { width } = Dimensions.get('window');
 
@@ -44,9 +45,14 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
               : route.name === 'Auth'
               ? 'sign-in'
               : route.name === 'TakePicture'
-              ? 'camera'
+              ? 'pagelines'
+              : route.name === 'Community'
+              ? 'comments'
+              : route.name === 'Connect to the sensor'
+              ? 'feed'
               : '';
 
+          
           const onPress = () => {
             const event = navigation.emit({
               type: 'tabPress',
@@ -73,7 +79,7 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
                 style={[
                   styles.iconCircle,
                   {
-                    backgroundColor: isFocused ? '#3BD3BC' : 'transparent',  // Blue when active, transparent otherwise
+                    backgroundColor: isFocused ? colors.primaryColor : 'transparent',  // Blue when active, transparent otherwise
                     transform: [{ scale: isFocused ? 1 : 0.8 }],  // Scale circle based on focus
                   },
                 ]}
@@ -81,9 +87,9 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
                 <FontAwesome
                   name={iconName}
                   size={isFocused ? 28 : 24}  // Larger icon for active tab
-                  color={isFocused ? '#fff' : 'black'}  // Highlight active tab icon
+                  color={isFocused ? colors.white : colors.black}  // Highlight active tab icon
                 />
-                <Text style={[styles.label, { color: isFocused ? '#fff' : 'black' }]}>
+                <Text style={[styles.label, { color: isFocused ? colors.white : colors.black, fontWeight: isFocused ? "bold": "normal"}]}>
                   {label}
                 </Text>
               </Animated.View>
@@ -106,7 +112,7 @@ const styles = StyleSheet.create({
   },
   tabBar: {
     flexDirection: 'row',
-    backgroundColor: '#B19D81',
+    backgroundColor: colors.secondaryColor,
     width: '100%',
     height: '100%',
     justifyContent: 'space-around',
@@ -123,6 +129,7 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 12,
     marginTop: 4,
+    textAlign:"center",
   },
   iconCircle: {
     alignItems: 'center',

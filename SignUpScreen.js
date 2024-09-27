@@ -1,21 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, Alert, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, SafeAreaView } from 'react-native';
-import { auth } from './firebaseConfig';  // Import Firebase Auth from your config
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';  // Import necessary auth functions
+import { auth } from './firebaseConfig';  
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';  
 import { useNavigation } from '@react-navigation/native';
-import { AntDesign } from '@expo/vector-icons';  // Import AntDesign for the arrow icon
-import { getFirestore, doc, setDoc } from 'firebase/firestore'; // Import Firestore functions
+import { AntDesign } from '@expo/vector-icons';  
+import { getFirestore, doc, setDoc } from 'firebase/firestore'; 
+import * as Notifications from 'expo-notifications';  
+import * as Device from 'expo-device';  
+import Constants from 'expo-constants';
 
 export default function SignUpScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [expoPushToken, setExpoPushToken] = useState(null); 
   const navigation = useNavigation();
 
-  // Initialize Firestore
   const db = getFirestore();
 
-  // Sign up user and update display name
+  const registerForPushNotificationsAsync = async () => {
+    let token;
+
+    if (Device.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+
+      if (finalStatus !== 'granted') {
+        Alert.alert('Failed to get push token for push notification!');
+        return;
+      }
+
+      token = (await Notifications.getExpoPushTokenAsync()).data;
+      setExpoPushToken(token);
+    } else {
+      Alert.alert('Must use physical device for Push Notifications');
+    }
+
+    return token;
+  };
+
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
+
   const handleSignup = () => {
     if (!name || !email || !password) {
       Alert.alert('Error', 'Please fill in all fields');
@@ -24,21 +56,19 @@ export default function SignUpScreen() {
 
     createUserWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
-        // Update the user's profile with their display name
         await updateProfile(userCredential.user, {
           displayName: name,
         });
 
-        // Create a new user document in Firestore with userDeviceConnection set to false
-        const userId = userCredential.user.uid; // Get the userId from Firebase Auth
+        const userId = userCredential.user.uid; 
         await setDoc(doc(db, 'users', userId), {
           name: name,
           email: email,
           userDeviceConnection: false,
+          expoPushToken: expoPushToken,  
         });
 
-        Alert.alert('User signed up successfully!');
-        navigation.navigate('Home'); // Navigate to Home after signup
+        navigation.navigate('Home'); 
       })
       .catch((error) => {
         Alert.alert('Error', error.message);
@@ -47,23 +77,19 @@ export default function SignUpScreen() {
 
   return (
     <ImageBackground 
-      source={require('./assets/auth_background.png')}  // Your background image path
+      source={require('./assets/auth_background.png')}  
       style={styles.backgroundImage} 
       resizeMode="cover"
     >
-      {/* Use SafeAreaView to account for device safe areas */}
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.overlay}>
           
-          {/* Back Arrow Icon */}
           <TouchableOpacity onPress={() => navigation.navigate('Auth')} style={styles.backButton}>
             <AntDesign name="arrowleft" size={36} color="black" />
           </TouchableOpacity>
 
-          {/* Add the logo */}
           <Image source={require('./assets/irriDate.png')} style={styles.logo} />
 
-          {/* Full Name input */}
           <TextInput
             placeholder="Full Name"
             value={name}
@@ -72,7 +98,6 @@ export default function SignUpScreen() {
             placeholderTextColor="#999"
           />
 
-          {/* Email input */}
           <TextInput
             placeholder="Email"
             value={email}
@@ -82,7 +107,6 @@ export default function SignUpScreen() {
             placeholderTextColor="#999"
           />
 
-          {/* Password input */}
           <TextInput
             placeholder="Password"
             value={password}
@@ -92,12 +116,10 @@ export default function SignUpScreen() {
             placeholderTextColor="#999"
           />
 
-          {/* Sign Up Button */}
           <TouchableOpacity onPress={handleSignup} style={styles.button}>
             <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          {/* Navigate to Sign In */}
           <Text
             style={styles.signUpText}
             onPress={() => navigation.navigate('Auth')}
@@ -144,7 +166,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    backgroundColor: '#44b39d',  // Match button color to theme
+    backgroundColor: '#44b39d',  
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',
@@ -163,8 +185,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 10,  // Adjusted to be visible within safe area
-    left: 25,  // Properly aligned in the visible part of the screen,
+    top: 10,  
+    left: 25,
     width:50,
     height:50,
     borderRadius:25,

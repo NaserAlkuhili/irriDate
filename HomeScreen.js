@@ -1,303 +1,207 @@
-// import { Button, StyleSheet, Text, View, Alert, TextInput, Image, Keyboard, TouchableWithoutFeedback } from 'react-native';
-// import { usePushNotifications } from './usePushNotification';
-// import React, { useState } from 'react';
-
-// export default function HomeScreen() {
-//   const { expoPushToken, notification } = usePushNotifications();
-
-//   // State for three inputs: temperature, moisture, and growth_stage
-//   const [temperature, setTemperature] = useState('');
-//   const [moisture, setMoisture] = useState('');
-//   const [growthStage, setGrowthStage] = useState('');
-
-//   // Function to send prediction request
-//   async function sendPrediction() {
-//     if (!expoPushToken?.data) {
-//       Alert.alert('Error', 'No push token available!');
-//       return;
-//     }
-
-//     try {
-//       const response = await fetch('https://irridate-backend.onrender.com/predict', {  // Update this URL if needed
-//         method: 'POST',
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({
-//           input_value: [parseFloat(temperature), parseFloat(moisture), parseFloat(growthStage)], 
-//           expo_push_token: expoPushToken.data,
-//         }),
-//       });
-
-
-//       const data = await response.json();
-
-//       if (data.notification_sent) {
-//         Alert.alert('Notification sent based on prediction!');
-//       } else {
-//         Alert.alert('Prediction was 0, no notification sent.');
-//       }
-//     } catch (error) {
-//       Alert.alert('Error', 'Could not send request');
-//     }
-//   }
-
-//   return (
-//     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-//           <View style={styles.container}>
-//       <Image source={require("/Users/nfk/my-new-project/assets/irriDate.png")} style={{ width: 100, height: 100 }} />
-//       <Text>Token: {expoPushToken?.data ?? ''}</Text>
-
-//       <View style={styles.inputContainer}>
-//         <Text>Temperature</Text>
-//         <TextInput
-//           style={styles.TextInput}
-//           keyboardType="decimal-pad"
-//           placeholder="Enter temperature"
-//           value={temperature}
-//           onChangeText={(text) => setTemperature(text)}
-//         />
-//       </View>
-
-//       <View style={styles.inputContainer}>
-//         <Text>Moisture</Text>
-//         <TextInput
-//           style={styles.TextInput}
-//           keyboardType="decimal-pad"
-//           placeholder="Enter moisture"
-//           value={moisture}
-//           onChangeText={(text) => setMoisture(text)}
-//         />
-//       </View>
-
-//       <View style={styles.inputContainer}>
-//         <Text>Growth Stage</Text>
-//         <TextInput
-//           style={styles.TextInput}
-//           keyboardType="decimal-pad"
-//           placeholder="Enter growth stage"
-//           value={growthStage}
-//           onChangeText={(text) => setGrowthStage(text)}
-//         />
-//       </View>
-
-//       <Button title="Send Prediction" onPress={sendPrediction} />
-//     </View>
-
-//     </TouchableWithoutFeedback>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   inputContainer: {
-//     width: '80%',
-//     margin: 10,
-//     padding: 10,
-//     borderWidth: 1,
-//     borderColor: '#ccc',
-//     borderRadius: 8,
-//   },
-//   TextInput: {
-//     width: '100%',
-//     height: 40,
-//     paddingHorizontal: 10,
-//   },
-// });
-
-import { Button, StyleSheet, Text, View, Alert, TextInput, Image, Keyboard, TouchableWithoutFeedback, TouchableOpacity, ImageBackground } from 'react-native';
-import { usePushNotifications } from './usePushNotification';
 import React, { useState } from 'react';
-import { auth } from './firebaseConfig';  // Assuming you have Firebase Auth setup
-import { signOut } from 'firebase/auth';  // Firebase sign-out function
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, Dimensions, ScrollView, StyleSheet, TouchableOpacity, Alert, SafeAreaView, Image } from 'react-native';
+import { LineChart } from 'react-native-chart-kit';
+import colors from './colors'; // Assuming you have a colors file for consistent color usage
+import { collection, doc, getDoc, setDoc, updateDoc, getFirestore } from 'firebase/firestore';
+import { auth } from './firebaseConfig'; // Import your Firebase config
+import DropDownPicker from 'react-native-dropdown-picker'; // Import DropDownPicker
 
 export default function HomeScreen() {
-  const { expoPushToken, notification } = usePushNotifications();
-  const navigation = useNavigation();
+  
+  // Artificial sensor data for temperature and soil moisture
+  const data = {
+    time: ['9:00', '9:05', '9:10', '9:15', '9:20', '9:25'],
+    temperature: [29, 30, 31, 32, 33, 34],
+    soilMoisture: [450, 460, 470, 480, 490, 500],
+  };
 
-  // State for three inputs: temperature, moisture, and growth_stage
-  const [temperature, setTemperature] = useState('');
-  const [moisture, setMoisture] = useState('');
-  const [growthStage, setGrowthStage] = useState('');
-
-  // Function to send prediction request
-  async function sendPrediction() {
-    if (!expoPushToken?.data) {
-      Alert.alert('Error', 'No push token available!');
-      return;
+  const [growthStage, setGrowthStage] = useState('Pick growth stage of your palms'); // Button label for growth stage
+  const [open, setOpen] = useState(false); // State to toggle dropdown visibility
+  const [value, setValue] = useState(null); // Selected dropdown value
+  const [items, setItems] = useState([
+    { 
+      label: 'Vegetative stage', 
+      value: '1', 
+      icon: () => (
+        <View style={styles.iconContainer}>
+          <Text style={styles.labelText}>Vegetative stage</Text>
+          <Image source={require('./assets/vegetative_stage.png')} style={styles.iconStyle} />
+        </View>
+      )
+    },
+    { 
+      label: 'Intermediate stage', 
+      value: '2', 
+      icon: () => (
+        <View style={styles.iconContainer}>
+          <Text style={styles.labelText}>Intermediate stage</Text>
+          <Image source={require('./assets/intermediate_stage.png')} style={styles.iconStyle} />
+        </View>
+      ) 
+    },
+    { 
+      label: 'Fruiting stage', 
+      value: '3', 
+      icon: () => (
+        <View style={styles.iconContainer}>
+          <Text style={styles.labelText}>Fruiting stage</Text>
+          <Image source={require('./assets/fruiting_stage.png')} style={styles.iconStyle} />
+        </View>
+      ) 
     }
+  ]); 
 
+  const db = getFirestore();
+
+  const handleGrowthStageSelect = async (stage) => {
     try {
-      const response = await fetch('https://irridate-backend.onrender.com/predict', {  // Update this URL if needed
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          input_value: [parseFloat(temperature), parseFloat(moisture), parseFloat(growthStage)], 
-          expo_push_token: expoPushToken.data,
-        }),
-      });
+      const user = auth.currentUser;
 
-      const data = await response.json();
-
-      if (data.notification_sent) {
-        Alert.alert('Notification sent based on prediction!');
-      } else {
-        Alert.alert('Prediction was 0, no notification sent.');
+      if (!user) {
+        Alert.alert('Not Authenticated', 'Please sign in to select a growth stage.');
+        return;
       }
-    } catch (error) {
-      Alert.alert('Error', 'Could not send request');
-    }
-  }
 
-  // Function to handle sign-out
-  const handleSignOut = () => {
-    signOut(auth)
-      .then(() => {
-        Alert.alert('Signed Out');
-        navigation.navigate('Auth');  // Navigate back to the Auth screen
-      })
-      .catch((error) => {
-        Alert.alert('Error', error.message);
-      });
+      const userDocRef = doc(collection(db, 'users'), user.uid);
+      const userDocSnapshot = await getDoc(userDocRef);
+
+      if (userDocSnapshot.exists()) {
+        // If the document exists, update the growthStage
+        await updateDoc(userDocRef, {
+          growthStage: stage,
+        });
+      } else {
+        // If the document doesn't exist, create a new one
+        await setDoc(userDocRef, {
+          growthStage: stage,
+        });
+      }
+
+      setGrowthStage(`Growth Stage: ${stage}`);
+    } catch (error) {
+      console.error('Error updating growth stage:', error);
+      Alert.alert('Error', 'Something went wrong while updating the growth stage.');
+    }
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <View style={{flex:1}}>
-        <ImageBackground 
-          source={require('./assets/auth_background.png')}  // Your background image path
-          style={styles.backgroundImage} 
-          resizeMode="cover"
-        >
-          <View style={styles.overlay}>
-            <Image source={require("./assets/irriDate.png")} style={styles.logo} />
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Smart Irrigation Dashboard</Text>
 
-            <Text>Token: {expoPushToken?.data ?? ''}</Text>
+      <Text style={styles.subtitle}>Temperature (°C)</Text>
+      <LineChart
+        data={{
+          labels: data.time,
+          datasets: [
+            {
+              data: data.temperature,
+            },
+          ],
+        }}
+        width={Dimensions.get('window').width - 40} // Width of the graph
+        height={220}
+        chartConfig={{
+          backgroundColor: '#fff',
+          backgroundGradientFrom: colors.lightGrey,
+          backgroundGradientTo: colors.lightGrey,
+          decimalPlaces: 1, // Optional, defaults to 2 decimal places
+          color: (opacity = 1) => `rgba(255, 99, 71, ${opacity})`, // Color of temperature line (tomato)
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Label color
+        }}
+        bezier
+        style={styles.graphStyle}
+      />
 
-            {/* Temperature input */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Temperature</Text>
-              <TextInput
-                style={styles.TextInput}
-                keyboardType="decimal-pad"
-                placeholder="Enter temperature"
-                value={temperature}
-                onChangeText={(text) => setTemperature(text)}
-                placeholderTextColor="#999"
-              />
-            </View>
+      <Text style={styles.subtitle}>Soil Moisture</Text>
+      <LineChart
+        data={{
+          labels: data.time,
+          datasets: [
+            {
+              data: data.soilMoisture,
+            },
+          ],
+        }}
+        width={Dimensions.get('window').width - 40} // Width of the graph
+        height={220}
+        chartConfig={{
+          backgroundColor: '#fff',
+          backgroundGradientFrom: colors.lightGrey,
+          backgroundGradientTo: colors.lightGrey,
+          decimalPlaces: 0, // No decimal places for soil moisture
+          color: (opacity = 1) => `rgba(66, 135, 245, ${opacity})`, // Color of soil moisture line (blue)
+          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Label color
+        }}
+        bezier
+        style={styles.graphStyle}
+      />
 
-            {/* Moisture input */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Moisture</Text>
-              <TextInput
-                style={styles.TextInput}
-                keyboardType="decimal-pad"
-                placeholder="Enter moisture"
-                value={moisture}
-                onChangeText={(text) => setMoisture(text)}
-                placeholderTextColor="#999"
-              />
-            </View>
-
-            {/* Growth Stage input */}
-            <View style={styles.inputContainer}>
-              <Text style={styles.label}>Growth Stage</Text>
-              <TextInput
-                style={styles.TextInput}
-                keyboardType="decimal-pad"
-                placeholder="Enter growth stage"
-                value={growthStage}
-                onChangeText={(text) => setGrowthStage(text)}
-                placeholderTextColor="#999"
-              />
-            </View>
-
-            <TouchableOpacity onPress={sendPrediction} style={styles.button}>
-              <Text style={styles.buttonText}>Send Prediction</Text>
-            </TouchableOpacity>
-
-            {/* Sign out button */}
-            <TouchableOpacity onPress={handleSignOut} style={styles.signOutButton}>
-              <Text style={styles.signOutButtonText}>Sign Out</Text>
-            </TouchableOpacity>
-          </View>
-        </ImageBackground>
-      </View>
-    </TouchableWithoutFeedback>
+      {/* Growth Stage Dropdown */}
+      <DropDownPicker
+        open={open}
+        value={value}
+        items={items}
+        setOpen={setOpen}
+        setValue={setValue}
+        setItems={setItems}
+        onChangeValue={(val) => {
+          setGrowthStage(`Growth Stage: ${val}`);
+          handleGrowthStageSelect(val);
+        }}
+        placeholder={growthStage}
+        style={styles.dropdownStyle}
+        dropDownContainerStyle={styles.dropDownContainerStyle}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    flex: 1,
-    justifyContent: 'center',
+  container: {
+    flexGrow: 1,
+    padding: 20,
     alignItems: 'center',
+    backgroundColor: '#ffffff',
   },
-  overlay: {
-    width: '100%',
-    height: '100%',
-    paddingHorizontal: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logo: {
-    width: 100,
-    height: 100,
-    marginBottom: 30,
-    resizeMode: 'contain',
-  },
-  inputContainer: {
-    width: '100%',
-    margin: 10,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    backgroundColor: '#fff',
-  },
-  label: {
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 5,
+    color: colors.primaryColor,
+    textAlign: 'center',
+    marginBottom: 20,
   },
-  TextInput: {
-    width: '100%',
-    height: 40,
-    paddingHorizontal: 10,
-    fontSize: 16,
-  },
-  button: {
-    width: '100%',
-    backgroundColor: '#44b39d',  // Match button color to theme
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: '#fff',
+  subtitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    color: '#6e6e6e',
+    marginBottom: 10,
+    textAlign: 'center',
   },
-  signOutButton: {
-    width: '100%',
-    backgroundColor: '#e74c3c',  // Red color for sign out button
-    padding: 15,
-    borderRadius: 10,
+  graphStyle: {
+    marginVertical: 8,
+    borderRadius: 16,
+  },
+  dropdownStyle: {
+    backgroundColor: '#fafafa',
+    width: Dimensions.get('window').width - 40,
+    borderColor: colors.primaryColor,
+    alignSelf: "center"
+  },
+  dropDownContainerStyle: {
+    backgroundColor: '#fafafa',
+    borderColor: colors.primaryColor,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', // Align text to the left and image to the right
     alignItems: 'center',
-    marginTop: 20,
+    width: '100%', // Ensure the container spans the width of the dropdown
   },
-  signOutButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
+  iconStyle: {
+    width: 20,
+    height: 20,
   },
+  labelText: {
+    flex: 1, // Make sure the text takes up available space
+  }
 });
+
