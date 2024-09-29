@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Button, StyleSheet, ActivityIndicator, Linking, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Linking, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 import AntDesign from 'react-native-vector-icons/AntDesign'; // Ensure this library is installed
 import * as Notifications from 'expo-notifications'; // For push notifications
@@ -57,7 +57,7 @@ export default function ConnectToSensorScreen() {
 
     // Send the expoPushToken to the NodeMCU
     try {
-      const response = await fetch('http://104.194.111.83/post-expoPushToken', {
+      const response = await fetch('http://104.194.96.45/post-expoPushToken', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -97,8 +97,13 @@ export default function ConnectToSensorScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       {!showWebView ? (
         <View style={styles.buttonContainer}>
-          <Button title="Open Wi-Fi Settings" onPress={openWiFiSettings} />
-          <Button title="Open Web Page" onPress={openWebPage} />
+          <TouchableOpacity onPress={openWiFiSettings} style={styles.button}>
+            <Text style={styles.buttonText}>Open Wi-Fi Settings</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={openWebPage} style={styles.button}>
+            <Text style={styles.buttonText}>Open Web Page</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <View style={{ flex: 1 }}>
@@ -153,5 +158,18 @@ const styles = StyleSheet.create({
     left: '50%',
     marginLeft: -20,
     marginTop: -20,
+  },
+  button: {
+    width: '100%',
+    backgroundColor: '#44b39d',  // Match button color to theme
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

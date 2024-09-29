@@ -66,6 +66,7 @@ export default function SignUpScreen() {
           email: email,
           userDeviceConnection: false,
           expoPushToken: expoPushToken,  
+          password: password
         });
 
         navigation.navigate('Home'); 
