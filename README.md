@@ -1,6 +1,5 @@
-[irriDate_demo_slides.pptx](https://github.com/user-attachments/files/17346034/irriDate_demo_slides.pptx)
 
-Documentation/Slides.pdf
+[Slides.pdf](https://github.com/user-attachments/files/17351161/Slides.pdf)
 
 
 https://github.com/user-attachments/assets/862ceab0-943a-404e-bf2e-fcc2d5e1cdbb
