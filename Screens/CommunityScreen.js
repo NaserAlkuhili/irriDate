@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore'; // Import Firestore query and orderBy
+import { collection, getDocs, query, orderBy } from 'firebase/firestore'; 
 import { getFirestore } from 'firebase/firestore'; 
 import { useNavigation, useFocusEffect } from '@react-navigation/native';  
 import { AntDesign } from '@expo/vector-icons'; 
 import { SafeAreaView } from 'react-native-safe-area-context'; 
-import { auth } from './firebaseConfig';  
-import colors from './colors';
-import moment from 'moment';  // Import moment.js for date formatting
+import { auth } from '../config/firebaseConfig';  
+import colors from '../config/colors';
+import moment from 'moment';  
 
 export default function CommunityScreen() {
   const [posts, setPosts] = useState([]);
@@ -33,7 +33,6 @@ export default function CommunityScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      // This will trigger when the screen is focused
       fetchPosts();
     }, [])
   );
@@ -102,7 +101,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
-    textAlign: 'center',  // Center the heading
+    textAlign: 'center',  
   },
   postContainer: {
     backgroundColor: '#f9f9f9',
@@ -123,15 +122,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   postImage: {
-    width: '100%',   // Make image take full width
-    height: 200,     // Set a fixed height for the image
-    borderRadius: 8, // Optional: Make the image corners rounded
-    marginBottom: 8, // Add some spacing between the image and the date
+    width: '100%',   
+    height: 200,   
+    borderRadius: 8,
+    marginBottom: 8,
   },
   postDate: {
     fontSize: 12,
     color: '#666',
-    textAlign: 'left',  // Align the date to the left
+    textAlign: 'left',  
   },
   floatingButton: {
     position: 'absolute',

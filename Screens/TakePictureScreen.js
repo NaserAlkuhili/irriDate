@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Ale
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from '@expo/vector-icons';
 import axios from 'axios';
-import colors from './colors';
+import colors from '../config/colors';
 import { useNavigation } from '@react-navigation/native';
-import Backend_Server_IP from './Backend_Server_IP';
+import Backend_Server_IP from '../config/Backend_Server_IP';
 
 export default function TakePictureScreen() {
   const [image, setImage] = useState(null);

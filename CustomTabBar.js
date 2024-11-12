@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Animated, StyleSheet, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import colors from './colors';
+import colors from './config/colors';
 
 const { width } = Dimensions.get('window');
 

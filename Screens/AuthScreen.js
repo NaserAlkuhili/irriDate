@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, Button, Alert, Text, Image, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
-import { auth } from './firebaseConfig';
+import { auth } from '../config/firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigation } from '@react-navigation/native';
 
@@ -23,13 +23,13 @@ export default function AuthScreen() {
 
   return (
     <ImageBackground 
-      source={require('./assets/auth_background.png')}  // Use your image here
+      source={require('../assets/auth_background.png')}  // Use your image here
       style={styles.backgroundImage} 
       resizeMode="cover"
     >
       <View style={styles.overlay}>
         {/* Add the logo */}
-        <Image source={require('./assets/irriDate.png')} style={styles.logo} />
+        <Image source={require('../assets/irriDate.png')} style={styles.logo} />
 
         {/* Email input */}
         <TextInput

@@ -1,26 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Dimensions,
-  StyleSheet,
-  Alert,
-  SafeAreaView,
-  Image,
-} from 'react-native';
+import {View, Text, Dimensions, StyleSheet, Alert, SafeAreaView, Image} from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
-import colors from './colors'; // Assuming you have a colors file for consistent color usage
-import {
-  collection,
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc,
-  getFirestore,
-  onSnapshot,
-} from 'firebase/firestore';
-import { auth } from './firebaseConfig'; // Import your Firebase config
-import DropDownPicker from 'react-native-dropdown-picker'; // Import DropDownPicker
+import colors from '../config/colors'; 
+import { collection, doc, getDoc, setDoc, updateDoc, getFirestore, onSnapshot} from 'firebase/firestore';
+import { auth } from '../config/firebaseConfig';
+import DropDownPicker from 'react-native-dropdown-picker'; 
 
 export default function HomeScreen() {
   const [data, setData] = useState({
@@ -40,7 +24,7 @@ export default function HomeScreen() {
       icon: () => (
         <View style={styles.iconContainer}>
           <Text style={styles.labelText}>Vegetative stage</Text>
-          <Image source={require('./assets/vegetative_stage.png')} style={styles.iconStyle} />
+          <Image source={require('../assets/vegetative_stage.png')} style={styles.iconStyle} />
         </View>
       ),
     },
@@ -50,7 +34,7 @@ export default function HomeScreen() {
       icon: () => (
         <View style={styles.iconContainer}>
           <Text style={styles.labelText}>Intermediate stage</Text>
-          <Image source={require('./assets/intermediate_stage.png')} style={styles.iconStyle} />
+          <Image source={require('../assets/intermediate_stage.png')} style={styles.iconStyle} />
         </View>
       ),
     },
@@ -60,7 +44,7 @@ export default function HomeScreen() {
       icon: () => (
         <View style={styles.iconContainer}>
           <Text style={styles.labelText}>Fruiting stage</Text>
-          <Image source={require('./assets/fruiting_stage.png')} style={styles.iconStyle} />
+          <Image source={require('../assets/fruiting_stage.png')} style={styles.iconStyle} />
         </View>
       ),
     },

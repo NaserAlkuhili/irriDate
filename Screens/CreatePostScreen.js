@@ -4,11 +4,11 @@ import * as ImagePicker from 'expo-image-picker';
 import { collection, addDoc, doc, getDoc } from 'firebase/firestore';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { auth } from './firebaseConfig';
+import { auth } from '../config/firebaseConfig';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { AntDesign, MaterialIcons } from '@expo/vector-icons'; // Import MaterialIcons for camera icon
-import colors from './colors';
+import { AntDesign, MaterialIcons } from '@expo/vector-icons'; 
+import colors from '../config/colors';
 
 export default function CreatePostScreen() {
   const [newPost, setNewPost] = useState('');
@@ -59,7 +59,7 @@ export default function CreatePostScreen() {
     try {
       setUploading(true);
 
-      // Convert the image URI to a Blob using XMLHttpRequest
+      // Convert the image URI to a Blob
       const response = await fetch(uri);
       const blob = await response.blob();
 

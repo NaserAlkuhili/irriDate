@@ -1,11 +1,11 @@
 import React, {useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, Linking} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import colors from './colors'; // Assuming you have a colors.js
+import colors from '../config/colors'; 
 
 export default function ResultsScreen({ route }) {
-  const { imageUri, predictionResult } = route.params; // Get params from navigation
-  const navigation = useNavigation();  // Get navigation object
+  const { imageUri, predictionResult } = route.params; 
+  const navigation = useNavigation();  
   const [isLoading, setIsLoading] = useState(false);
 
   // Function to find the index of the maximum probability

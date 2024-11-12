@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, Alert, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, SafeAreaView } from 'react-native';
-import { auth } from './firebaseConfig';  
+import { auth } from '../config/firebaseConfig';  
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';  
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign } from '@expo/vector-icons';  
 import { getFirestore, doc, setDoc } from 'firebase/firestore'; 
 import * as Notifications from 'expo-notifications';  
 import * as Device from 'expo-device';  
-import Constants from 'expo-constants';
 
 export default function SignUpScreen() {
   const [name, setName] = useState('');
@@ -78,7 +77,7 @@ export default function SignUpScreen() {
 
   return (
     <ImageBackground 
-      source={require('./assets/auth_background.png')}  
+      source={require('../assets/auth_background.png')}  
       style={styles.backgroundImage} 
       resizeMode="cover"
     >
@@ -89,7 +88,7 @@ export default function SignUpScreen() {
             <AntDesign name="arrowleft" size={36} color="black" />
           </TouchableOpacity>
 
-          <Image source={require('./assets/irriDate.png')} style={styles.logo} />
+          <Image source={require('../assets/irriDate.png')} style={styles.logo} />
 
           <TextInput
             placeholder="Full Name"

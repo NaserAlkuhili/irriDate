@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Linking, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
-import AntDesign from 'react-native-vector-icons/AntDesign'; // Ensure this library is installed
+import AntDesign from 'react-native-vector-icons/AntDesign'; 
 import * as Notifications from 'expo-notifications'; // For push notifications
 import { getFirestore, doc, updateDoc } from 'firebase/firestore'; // Firestore functions
 import { getAuth } from 'firebase/auth'; // Firebase Auth
-import { app } from './firebaseConfig'; // Import firebaseConfig
+import { app } from '../config/firebaseConfig'; // Import firebaseConfig
 
 // Initialize Firestore
 const db = getFirestore(app);
@@ -43,12 +43,11 @@ export default function ConnectToSensorScreen() {
 
   const openWiFiSettings = () => {
     // Open Wi-Fi settings for the user to connect manually
-    Linking.openURL('App-Prefs:root=WIFI'); // For iOS
-    // For Android, this will open WiFi settings by default
+    Linking.openURL('App-Prefs:root=WIFI');
   };
 
   const openWebPage = () => {
-    setUrl('http://192.168.4.1'); // Replace with the desired URL
+    setUrl('http://192.168.4.1'); 
     setShowWebView(true); // Show the WebView
   };
 
@@ -57,7 +56,7 @@ export default function ConnectToSensorScreen() {
 
     // Send the expoPushToken to the NodeMCU
     try {
-      const response = await fetch('http://104.194.96.45/post-expoPushToken', {
+      const response = await fetch('http://104.194.99.228/post-expoPushToken', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +76,7 @@ export default function ConnectToSensorScreen() {
 
         if (user) {
           // Update userDeviceConnection to true in Firestore
-          const userDoc = doc(db, 'users', user.uid); // Replace 'users' with your collection name
+          const userDoc = doc(db, 'users', user.uid); 
           await updateDoc(userDoc, {
             userDeviceConnection: true,
           });
@@ -130,7 +129,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 50, // Added padding from the top
+    paddingTop: 50, 
     padding: 20,
     backgroundColor: 'lightgray',
     flex: 1,
@@ -150,7 +149,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    zIndex: 10, // Ensure it's above other elements
+    zIndex: 10, 
   },
   loadingIndicator: {
     position: 'absolute',
@@ -161,7 +160,7 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    backgroundColor: '#44b39d',  // Match button color to theme
+    backgroundColor: '#44b39d',  
     padding: 15,
     borderRadius: 10,
     alignItems: 'center',

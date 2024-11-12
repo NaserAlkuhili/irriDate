@@ -7,17 +7,17 @@ import { View, ActivityIndicator, Alert, LogBox} from 'react-native';
 import { doc, getDoc, onSnapshot } from 'firebase/firestore'; // Import Firestore functions
 
 
-import AuthScreen from './AuthScreen';  
-import SignUpScreen from './SignUpScreen';  
-import HomeScreen from './HomeScreen';  
-import { auth } from './firebaseConfig';  
-import TakePictureScreen from './TakePictureScreen';  
+import AuthScreen from './Screens/AuthScreen';  
+import SignUpScreen from './Screens/SignUpScreen';  
+import HomeScreen from './Screens/HomeScreen';  
+import { auth } from './config/firebaseConfig';  
+import TakePictureScreen from './Screens/TakePictureScreen';  
 import CustomTabBar from './CustomTabBar';  // Import the custom tab bar
 import { getFirestore } from 'firebase/firestore'; // Firestore initialization
-import ConnectToSensorScreen from './ConnectToSensorScreen';
-import CommunityScreen from './CommunityScreen';
-import CreatePostScreen from './CreatePostScreen';
-import ResultsScreen from './ResultsScreen';  // Import ResultsScreen
+import ConnectToSensorScreen from './Screens/ConnectToSensorScreen';
+import CommunityScreen from './Screens/CommunityScreen';
+import CreatePostScreen from './Screens/CreatePostScreen';
+import ResultsScreen from './Screens/ResultsScreen';  // Import ResultsScreen
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();

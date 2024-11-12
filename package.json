@@ -49,7 +49,8 @@
     "watchman": "^1.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@types/react-native": "^0.72.8"
   },
   "private": true
 }
