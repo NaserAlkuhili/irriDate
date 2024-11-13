@@ -1,13 +1,19 @@
-- **Backend Code Repository**
+**Backend Code Repository**
 
   [irriDate Backend Code](https://github.com/NaserAlkuhili/irriDate_backend)
 
 
+**Detailed Documentation**
+[irriDate - Detailed Documentation.pdf](https://github.com/user-attachments/files/17724450/irriDate.-.Detailed.Documentation.pdf)
+
+
+
+**Slides**
 [Slides.pdf](https://github.com/user-attachments/files/17351161/Slides.pdf)
 
 
 
-Short video demonsrations:
+## **Short video demonsrations:**
 
 #### Smart Irrigation feature:
 https://github.com/user-attachments/assets/862ceab0-943a-404e-bf2e-fcc2d5e1cdbb
