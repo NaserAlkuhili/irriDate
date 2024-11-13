@@ -63,6 +63,7 @@ export default function SignUpScreen() {
         await setDoc(doc(db, 'users', userId), {
           name: name,
           email: email,
+          password: password,
           userDeviceConnection: false,
           expoPushToken: expoPushToken,  
         });

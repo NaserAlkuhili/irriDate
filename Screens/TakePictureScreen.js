@@ -57,7 +57,7 @@ export default function TakePictureScreen() {
         name: 'palm_tree.jpg'
       });
 
-      const response = await axios.post(f`${Backend_Server_IP}/predict_plant_health`, formData, {
+      const response = await axios.post(`${Backend_Server_IP}/predict_plant_health`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
