@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Linking, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
+import { View, Button, StyleSheet, ActivityIndicator, Linking, TouchableOpacity, SafeAreaView, Alert } from 'react-native';
 import { WebView } from 'react-native-webview';
 import AntDesign from 'react-native-vector-icons/AntDesign'; 
 import * as Notifications from 'expo-notifications'; // For push notifications
@@ -56,7 +56,11 @@ export default function ConnectToSensorScreen() {
 
     // Send the expoPushToken to the NodeMCU
     try {
+<<<<<<< HEAD:Screens/ConnectToSensorScreen.js
       const response = await fetch('http://104.194.99.228/post-expoPushToken', {
+=======
+      const response = await fetch('http://104.194.111.83/post-expoPushToken', {
+>>>>>>> parent of 3bba9f5 (updated the HomeScreen graphs and added Backend Server IP.js):ConnectToSensorScreen.js
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,13 +100,8 @@ export default function ConnectToSensorScreen() {
     <SafeAreaView style={{ flex: 1 }}>
       {!showWebView ? (
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={openWiFiSettings} style={styles.button}>
-            <Text style={styles.buttonText}>Open Wi-Fi Settings</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={openWebPage} style={styles.button}>
-            <Text style={styles.buttonText}>Open Web Page</Text>
-          </TouchableOpacity>
+          <Button title="Open Wi-Fi Settings" onPress={openWiFiSettings} />
+          <Button title="Open Web Page" onPress={openWebPage} />
         </View>
       ) : (
         <View style={{ flex: 1 }}>
@@ -158,6 +157,7 @@ const styles = StyleSheet.create({
     marginLeft: -20,
     marginTop: -20,
   },
+<<<<<<< HEAD:Screens/ConnectToSensorScreen.js
   button: {
     width: '100%',
     backgroundColor: '#44b39d',  
@@ -171,4 +171,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+=======
+>>>>>>> parent of 3bba9f5 (updated the HomeScreen graphs and added Backend Server IP.js):ConnectToSensorScreen.js
 });
